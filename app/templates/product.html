@@ -1,184 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
-    <script src="https://kit.fontawesome.com/c2e5f11c19.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
-    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
-</head>
-<body style="font-size: large; ">
-    <div class="container text-center">
-        <h1 class="display-1">Strona produktu</h1>
-    </div>
-
-    <div >
-        <table id="myTable" class="datatable">
-            <thead>
-            <tr>
-                <th scope="col">Imię</th>
-                <th scope="col">Data</th>
-                <th scope="col">Liczba opinii</th>
-                <th scope="col">Liczba wad</th>
-                <th scope="col">Liczba zalet</th>
-                <th scope="col">Średnia ocen</th>
-            </tr>
-            </thead>
-            <!-- Dane opinii -->
-            <tbody>
-            <tr style="padding: 5px;">
-                <td>Adam</td>
-                <td>---</td>
-                <td>---</td>
-                <td>4</td>
-                <td>---</td>
-                <td>---</td>
-            </tr>
-            <!-- Pozostałe wiersze opinii -->
-            <tr style="padding: 5px;">
-                <td>Wacek</td>
-                <td>---</td>
-                <td>---</td>
-                <td>0</td>
-                <td>---</td>
-                <td>---</td>
-            </tr>
-            <tr style="padding: 5px;">
-                <td>Zenek</td>
-                <td>---</td>
-                <td>---</td>
-                <td>10</td>
-                <td>---</td>
-                <td>---</td>
-            </tr>
-            <tr style="padding: 5px;">
-                <td>Hubert</td>
-                <td>---</td>
-                <td>---</td>
-                <td>2</td>
-                <td>---</td>
-                <td>---</td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
- <!-- Przycisk przekierowujący do strony z wykresami -->
-    <div class="position-absolute bottom-0 start-0">
-                <!-- Przycisk pobierania pliku -->
-        <button id="downloadButton1" style="padding-left:10px;" >Pobierz opinie .csv</button>
-        <button id="downloadButton2" style="padding-left:10px;" >Pobierz opinie .json</button>
-        <button id="downloadButton3" style="padding-left:10px;" >Pobierz opinie .xlsx</button>
-    </div>
-    <div class="position-absolute bottom-0 end-0">
-        <button><a href="charts.html" >Wykresy</a></button>
-    </div>
-            
-
-    <script>
-        $(document).ready(function() {
-            $('#myTable').DataTable({
-                // Konfiguracja sortowania i filtrowania
-                order: [[0, 'asc']], // Sortowanie po pierwszej kolumnie rosnąco
-                searching: true, // Włączanie filtrowania
-                paging: true, // Włączanie paginacji
-                // Dodatkowe opcje i konfiguracje
-  });
-});
-    </script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
-
-    <script>
-        function downloadAsCSV() {
-            const table = document.getElementById('myTable'); // Zmień 'myTable' na id swojej tabeli
-            const rows = Array.from(table.getElementsByTagName('tr'));
-
-            // Tworzenie tablicy z danymi
-            const data = rows.map(row => {
-                return Array.from(row.children).map(cell => cell.textContent);
-            });
-
-            // Konwersja danych na format CSV
-            const csvContent = data.map(row => row.join(',')).join('\n');
-
-            // Tworzenie linku do pobrania pliku
-            const encodedUri = encodeURI('data:text/csv;charset=utf-8,' + csvContent);
-            const link = document.createElement('a');
-            link.setAttribute('href', encodedUri);
-            link.setAttribute('download', 'dane.csv');
-            document.body.appendChild(link);
-            link.click();
-            }
-
-            // Funkcja do pobierania danych i zapisywania ich w formacie .xlsx
-        function downloadAsXLSX() {
-            const table = document.getElementById('myTable');
-
-            // Tworzenie arkusza kalkulacyjnego
-            const workbook = XLSX.utils.table_to_book(table);
-
-            // Konwersja arkusza kalkulacyjnego na formę binarną XLSX
-            const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-
-            // Tworzenie pliku XLSX
-            const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'table_data.xlsx';
-            link.click();
-
-            // Zwolnienie zasobów URL
-            URL.revokeObjectURL(url);
-            }
-
-            // Funkcja do pobierania danych i zapisywania ich w formacie .json
-            function downloadAsJSON() {
-            const table = document.getElementById('myTable'); // Zmień 'myTable' na id swojej tabeli
-            const rows = Array.from(table.getElementsByTagName('tr'));
-            const jsonData = rows.map(row => {
-                const data = {};
-                Array.from(row.children).forEach((cell, index) => {
-                const header = table.getElementsByTagName('th')[index].textContent;
-                data[header] = cell.textContent;
-                });
-                return data;
-            });
-
-            const jsonDataStr = JSON.stringify(jsonData, null, 2);
-            const encodedUri = encodeURI('data:application/json;charset=utf-8,' + jsonDataStr);
-            const link = document.createElement('a');
-            link.setAttribute('href', encodedUri);
-            link.setAttribute('download', 'dane.json');
-            document.body.appendChild(link);
-            link.click();
-            }
-
-
-            // Dodaj obsługę kliknięcia przycisku
-            document.getElementById('downloadButton1').addEventListener('click', function() {
-            // Wybierz jedną z funkcji, której chcesz użyć
-            downloadAsCSV();
-            // downloadAsXLSX();
-            // downloadAsJSON();
-            });
-            document.getElementById('downloadButton2').addEventListener('click', function() {
-            downloadAsJSON();
-            });
-            document.getElementById('downloadButton3').addEventListener('click', function() {
-            downloadAsXLSX();
-            });
-    </script>
-    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
-</body>
-</html>
+{% extends 'base.html' %}
+{% block title %}Opinie o produkcie{% endblock %}
+{% block script %}
+<script>
+    $(document).ready( function () {
+        $('#opinions').DataTable();
+    } );
+</script>
+{% endblock %}
+{% block content %}
+<table id='opinions' class="table table-striped table-warning">
+    <thead>
+        <tr>
+            <th>Kol1</th>
+            <th>Kol2</th>
+        </tr>
+    </thead>    
+    <tbody>
+        <tr>
+            <td>Data1</td>
+            <td>Data2</td>
+        </tr>
+        <tr>
+            <td>Data3</td>
+            <td>Data4</td>
+        </tr>
+    </tbody>
+</table>
+{% endblock %}
